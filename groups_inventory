@@ -1,0 +1,10 @@
+[dev]
+dev-server1.example.com
+dev-server2.example.com
+
+[staging]
+staging-server1.example.com
+
+[prod]
+prod-server1.example.com
+prod-server2.example.com

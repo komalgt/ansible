@@ -1,0 +1,59 @@
+---
+- name: Deploy simple web app to EC2 Apache server
+  hosts: webservers
+  become: true
+
+  vars:
+    web_src_dir: "./webapp"
+    apache_web_root: "/var/www/html"
+
+  tasks:
+    # Copy a single file
+    - name: Copy web app index.html file
+      copy:
+        src: "{{ web_src_dir }}/index.html"
+        dest: "{{ apache_web_root }}/index.html"
+        owner: ubuntu
+        group: ubuntu
+        mode: '0644'
+
+    # To copy the entire directory, comment out the above task and uncomment this block
+    # - name: Copy all web app files to EC2 server
+    #   synchronize:
+    #     src: "{{ web_src_dir }}/"
+    #     dest: "{{ apache_web_root }}/"
+    #     recursive: yes
+
+    # Set correct permissions for Apache web root (Debian/Ubuntu)
+    - name: Set correct permissions for Apache web root (Debian/Ubuntu)
+      file:
+        path: "{{ apache_web_root }}"
+        owner: www-data
+        group: www-data
+        mode: '0755'
+        recurse: yes
+      when: ansible_facts['os_family'] == 'Debian'
+
+    # Set correct permissions for Apache web root (RedHat/CentOS)
+    - name: Set correct permissions for Apache web root (RedHat/CentOS)
+      file:
+        path: "{{ apache_web_root }}"
+        owner: apache
+        group: apache
+        mode: '0755'
+        recurse: yes
+      when: ansible_facts['os_family'] == 'RedHat'
+
+    # Restart Apache service for RedHat/CentOS
+    - name: Restart Apache service (RedHat/CentOS)
+      service:
+        name: httpd
+        state: restarted
+      when: ansible_facts['os_family'] == 'RedHat'
+
+    # Restart Apache service for Debian/Ubuntu
+    - name: Restart Apache service (Debian/Ubuntu)
+      service:
+        name: apache2
+        state: restarted
+      when: ansible_facts['os_family'] == 'Debian'

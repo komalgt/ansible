@@ -1,0 +1,10 @@
+---
+- name: Deploy to servers in environment group
+  hosts: "{{ target_env }}"
+  gather_facts: no
+  tasks:
+    - name: Print environment information
+      debug:
+        msg:
+          - "DB Host: {{ db_host }}"
+          - "Debug mode: {{ debug }}"
