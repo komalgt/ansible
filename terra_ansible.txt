@@ -1,0 +1,38 @@
+Step 1: Prepare Terraform Configuration
+Files Needed:
+main.tf: Defines AWS provider, EC2 resources.
+variables.tf: Declares input variables.
+outputs.tf: Declares output values for instance IPs.
+
+Step 2: Provision Infrastructure with Terraform
+Run commands:
+Bashterraform init           # Initialize the Terraform project
+terraform plan           # Review planned changes
+terraform apply          # Provision resources
+terraform output -json > tf_outputs.json
+
+Step 3: Generate Dynamic Ansible Inventory
+ Ansible Dynamic Inventory Plugin
+Install plugin: (Bash)
+ansible-galaxy collection install community.general
+
+Create a plugin config (inventory.tf.yml):
+# inventory.tf.yml
+plugin: community.general.terraform
+tfstate: ./terraform.tfstate     # Path to your Terraform state file
+
+Step 4: Write and Run Ansible Playbooks
+Example playbook (deploy.yml):
+Run playbook:
+Bashansible-playbook -i inventory.yml deploy.yml
+# Or, if using dynamic plugin:
+ansible-playbook -i inventory.tf.yml deploy.yml
+
+
+
+
+
+
+
+
+
