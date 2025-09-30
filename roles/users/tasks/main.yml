@@ -1,0 +1,4 @@
+---
+- name: Echo webserver setup
+  debug:
+    msg: "Users role is executing."
